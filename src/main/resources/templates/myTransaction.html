@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+
+<!-------------- head --------------->
+<head th:replace="fragments/head :: head"></head>
+
+<link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<style>
+	/******* For Table ********/
+	.table-bordered > thead > tr > th, 
+	.table-bordered > tbody > tr > th, 
+	.table-bordered > tfoot > tr > th, 
+	.table-bordered > thead > tr > td, 
+	.table-bordered > tbody > tr > td, 
+	.table-bordered > tfoot > tr > td {
+    	border: 1px solid #8c8b8b;
+	}
+	#example_paginate, #example_filter {
+		text-align: right;
+	}
+	table > thead {
+		background: #bfbfbf;
+	}
+	.table-bordered > thead > tr > th {
+		padding: 10px;
+	}
+	
+	/******* For Radio Buttons ********/
+.toggle_radio{
+  position: relative;
+  background: #5142df;
+  margin: 4px auto;
+  overflow: hidden;
+  padding: 0 !important;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  position: relative;
+  height: 35px;
+  width: 213px;
+}
+.toggle_radio > * {
+  float: left;
+}
+.toggle_radio input[type=radio]{
+  display: none;
+}
+.toggle_radio label{
+  color: rgba(255,255,255,.9);
+  z-index: 0;
+  display: block;
+  width: 100px;
+  height: 28px;
+  margin: 3px 3px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  cursor: pointer;
+  z-index: 1;
+  text-align: center;
+  padding-top: 4px;
+}
+.toggle_option_slider{
+  width: 100px;
+  height: 30px;
+  position: absolute;
+  top: 3px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  -webkit-transition: all .4s ease;
+  -moz-transition: all .4s ease;
+  -o-transition: all .4s ease;
+  -ms-transition: all .4s ease;
+  transition: all .4s ease;
+}
+
+#first_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 3px;
+}
+#second_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 109px;
+}
+#third_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 215px;
+}
+</style>
+<body>
+
+    <!-------------- header --------------->
+    <header th:replace="fragments/header :: header"></header>
+
+    <!-------------- main container --------------->
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="page-wrapper toggled">
+                
+				<div th:replace="fragments/leftbar :: leftbar"></div>
+				
+                <!-- content div -->
+                <main class="page-content">
+                    <div class="col-md-12">
+                        <div class="container-fluid">
+                            <h2>Transactions</h2>
+                            <hr style="margin:0px; border-bottom: none;">
+                                <div class="clear ht-40"></div>
+                            <div class="row new-row-div">
+                            	<div th:if="${message}" th:class="${'alert ' + swapClass}" role="alert">
+								  <strong th:text="${message}"></strong>
+								</div>
+										<!-------------- error message on user creation --------------->
+								<div th:each="erm : ${errorMessage}">
+									<div th:if="${erm}" class="alert alert-danger" role="alert">
+									  <strong th:text="${erm}"></strong>
+									</div>
+								</div>
+
+                            	<div class="form-bg-color" style="height: auto">
+                                    <div class="col-sm-12" style="padding: 0px;">
+                                    	<div th:if="${!allTransactions.isEmpty() and allTransactions != null}">
+                                    		<label for="subject">My Transactions&nbsp;&nbsp;&nbsp;<span style="font-size: 18px;" th:text="${'('+countmyTransaction+')'}"></span></label>
+	                                    	<div class="cust-table-div-desg">
+		                                        <table id="example" class="table table-striped table-bordered" style="width:100%; border: 1px solid #8c8b8b;">
+											        <thead>
+											            <tr>
+											                <th style="width:0px">#</th>
+											                <th>Product Id</th>
+											                <th>Product Detail</th>
+											                <th>Performed On</th>
+											                <th>Transaction Quantity</th>
+											                <th>Quantity In Stock (at that time)</th>
+											                <th>Comment</th>
+											            </tr>
+											       	</thead>
+											        <tbody>
+											            <tr th:each="transaction, cnt: ${allTransactions}">
+											                <td th:text="${cnt.count}"></td>
+											                <td style="color:blue" class="pointer" data-toggle="modal" data-target="#myModalProduct" th:attr="onclick='openProductModal(\'' + ${transaction.product.productName + '@=@' + transaction.product.inStock + '@=@' + transaction.product.allotedQuantity + '@=@' + transaction.product.productCategory.categoryName + '@=@' + transaction.product.productDescription + '@=@' + transaction.product.productImage + '@=@' + transaction.product.productId}+  '\');'" title="View Product Details"><span th:text="${'PT-'+transaction.product.productId}"></span></td>
+											                <td style="color:blue" class="pointer" data-toggle="modal" data-target="#myModalProduct" th:attr="onclick='openProductModal(\'' + ${transaction.product.productName + '@=@' + transaction.product.inStock + '@=@' + transaction.product.allotedQuantity + '@=@' + transaction.product.productCategory.categoryName + '@=@' + transaction.product.productDescription + '@=@' + transaction.product.productImage + '@=@' + transaction.product.productId}+  '\');'" title="View Product Details"><span th:text="${transaction.product.productName}"></span></td>
+											                <td th:text="${#temporals.format(transaction.creationDateTime, 'MMM dd, yyyy')}"></td>
+											                <td><i th:class="${transaction.transactionType eq 'deposit'} ? 'fa fa-plus trns-typr-color-green' : 'fa fa-minus trns-typr-color-red'" th:title="${transaction.transactionType eq 'deposit'} ? 'Deposited' : 'Removed'"></i>&nbsp;&nbsp;<span th:text="${transaction.quantity}"></span></td>
+													    	<td th:text="${transaction.quantityRemaining}"></td>
+													    	<td th:text="${transaction.comment}"></td>
+										            	</tr>
+										        	</tbody>
+												</table>
+	                                    	</div>
+                                    	</div>
+                                    	<div th:unless="${!allTransactions.isEmpty() and allTransactions != null}" class="alert alert-danger" role="alert">
+                                    		<label for="subject">Transaction has not been performed yet</label>
+                                    	</div>
+                                    </div>
+                                        <div class="clear"></div>
+									
+									<!-- Product Modal -->
+									<div id="myModalProduct" class="modal fade" role="dialog">
+									  <div class="modal-dialog">
+									
+									    <!-- Modal content-->
+									    <div class="modal-content" style="color:#000;">
+									      <div class="modal-header">
+									        <button type="button" class="close" data-dismiss="modal">&times;</button>
+									        <h4 class="modal-title" id="productNameInitial"></h4>
+									      </div>
+									      <div class="modal-body">
+									      	<div class="col-sm-12" style="padding:0px">
+									      		<div class="col-sm-9" style="padding:0px">
+									      			<label>Product Id: </label> <span id="showProductIdOutput"></span>
+									      				<br/>
+									      			<label>Product Category: </label> <span id="showProductCategoryOutput"></span>
+									      				<br/>
+									      			<label>Product Description: </label> <span id="showProductDescriptionOutput"></span>
+									      				<br/>
+									      			<label>Quantity In Stock: </label> <span id="showProductQuantityOutput"></span>
+									      				<br/>
+									      			<label>Alloted Quantity: </label> <span id="showProductAllotedOutput"></span>
+									      		</div>
+									      		<div class="col-sm-3" id="showProductImageOutput"></div>
+									      			<div class="clear"></div>
+									      	</div>
+									      </div>
+									      <div class="modal-footer" style="border:none">
+									        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									      </div>
+									    </div>
+									
+									  </div>
+									</div>
+												
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            
+        </div>
+        <!------------ Footer ------------>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </div>
+    <!------------ Javascript and jQuery files ------------>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/customScript.js" defer></script>
+    <script src="/js/validation.js" defer></script>
+    
+     <!------------ For table ------------>
+    <script src="/js/jquery.dataTables.min.js" defer></script>
+    <script src="/js/dataTables.bootstrap4.min.js" defer></script>
+    <script>
+	    $(document).ready(function() {
+	        $('#example').DataTable({
+	        	"pageLength": 50
+	        });
+	    });
+    </script>
+    <!------------ For table ------------>
+    
+    <script>
+	
+    	function openProductModal(val) {
+    		var res = val.split("@=@");
+    		$("#productNameInitial").text(res[0]);
+    		
+    		if(res[5] == "" || res[5] == "null" || res[5] == null) {
+    			
+    			res[5] = "dummyProduct.png";
+    		} else {
+    			res[5] = res[5];
+    		}
+    		$("#showProductAllotedOutput").text(res[2]);
+    		$("#showProductCategoryOutput").text(res[3]);
+    		$("#showProductQuantityOutput").text(res[1]);
+    		$("#showProductDescriptionOutput").text(res[4]);
+    		$("#showProductImageOutput").html("<img src='../uploaded_images/"+ res[5] +"' class='img-responsive img-rounded'/>");
+    		$("#showProductIdOutput").text('PT-'+res[6]);
+    	}
+    </script>
+</body>
+
+</html>

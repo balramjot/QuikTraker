@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+
+<!-------------- head --------------->
+<head th:replace="fragments/head :: head"></head>
+
+<link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!------------ CSS styling ------------>
+<style>
+
+	/********** for table ***********/
+	
+	.table-bordered > thead > tr > th, 
+	.table-bordered > tbody > tr > th, 
+	.table-bordered > tfoot > tr > th, 
+	.table-bordered > thead > tr > td, 
+	.table-bordered > tbody > tr > td, 
+	.table-bordered > tfoot > tr > td {
+    	border: 1px solid #8c8b8b;
+	}
+	#example_paginate, #example_filter {
+		text-align: right;
+	}
+	table > thead {
+		background: #bfbfbf;
+	}
+	.table-bordered > thead > tr > th {
+		padding: 10px;
+	}
+	
+	/********** for checkbox ***********/
+	
+	.customcheck {
+	    display: block;
+	    position: relative;
+	    padding-left: 35px;
+	    margin-bottom: 12px;
+	    cursor: pointer;
+	    font-size: 22px;
+	    -webkit-user-select: none;
+	    -moz-user-select: none;
+	    -ms-user-select: none;
+	    user-select: none;
+	}
+	.customcheck input {
+	    position: absolute;
+	    opacity: 0;
+	    cursor: pointer;
+	}
+	.checkmark {
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    height: 25px;
+	    width: 25px;
+	    background-color: #eee;
+	    border-radius: 5px;
+	    border: 1px solid #918a8a;
+	}
+	.customcheck:hover input ~ .checkmark {
+	    background-color: #ccc;
+	}
+	.customcheck input:checked ~ .checkmark {
+	    background-color: #2980b9;
+	    border-radius: 5px;
+	}
+	.checkmark:after {
+	    content: "";
+	    position: absolute;
+	    display: none;
+	}
+	.customcheck input:checked ~ .checkmark:after {
+	    display: block;
+	}
+	.customcheck .checkmark:after {
+	    left: 9px;
+	    top: 5px;
+	    width: 5px;
+	    height: 10px;
+	    border: solid white;
+	    border-width: 0 3px 3px 0;
+	    -webkit-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	    transform: rotate(45deg);
+	}
+</style>
+<body>
+
+    <!-------------- header --------------->
+    <header th:replace="fragments/header :: header"></header>
+
+    <!-------------- main container --------------->
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="page-wrapper toggled">
+                
+				<div th:replace="fragments/leftbar :: leftbar"></div>
+				
+                <!-- content div -->
+                <main class="page-content">
+                    <div class="col-md-12">
+                        <div class="container-fluid">
+                            <h2>Contact Us</h2>
+                            <hr style="margin:0px; border-bottom: none;">
+                                <div class="clear ht-40"></div>
+                            <div class="row new-row-div">
+                             		<!-------------- success message on user creation --------------->
+                			
+			                	<div th:if="${message}" th:class="${'alert ' + swapClass}" role="alert">
+								  <strong th:text="${message}"></strong>
+								</div>
+										<!-------------- error message on user creation --------------->
+										
+			                	
+								<div th:each="erm : ${errorMessage}">
+									<div th:if="${erm}" class="alert alert-danger" role="alert">
+									  <strong th:text="${erm}"></strong>
+									</div>
+								</div>
+								
+                               <div class="form-bg-color" style="height: auto">
+                                   
+                                    <div class="col-sm-12">
+                                    	<div th:if="${!contactUs.isEmpty() and contactUs != null}">
+                                    		<label for="subject">Manage Contact Us Messages</label>
+	                                    	<div class="cust-table-div-desg">
+	                                    	<form method="POST" th:action="@{/admin/readAllMessages}">
+	                                    		<div class="col-sm-5"></div>
+	                                    		<div class="col-sm-2" style="margin-bottom: -30px; z-index: 999">
+	                                    			<button type="submit" class="btn btn-success" id="markAllAsRead"><i class="fa fa-check"></i>&nbsp;&nbsp;&nbsp;Mark all as read</button>
+	                                    		</div>
+	                                    			<div class="clear"></div>
+		                                        <table id="example" class="table table-striped table-bordered" style="width:100%; border: 1px solid #8c8b8b;">
+											        <thead>
+											            <tr>
+											                <th>
+											                	<label class="customcheck">
+											                		<input type="checkbox" id="checkBoxAll" class="markAllAsReadCheckBoxes"/>
+											                		<span class="checkmark" style="margin-top: -10px;"></span>
+											                	</label>
+											                </th>
+											                <th>Email</th>
+											                <th>Full Name</th>
+											                <th>Subject</th>
+											                <th>Message</th>
+											                <th>Received On</th>
+											                <th>Control</th>
+											            </tr>
+											       	</thead>
+											        <tbody>
+											            <tr th:each="contactus, cnt: ${contactUs}" th:style="${contactus.contactStatus eq false} ? 'background:#93d9bb'">
+											                <td>
+											                	<label class="customcheck">
+											                		<input type="checkbox" class="chkCheckBoxId markAllAsReadCheckBoxes" th:value="${contactus.contactId}" th:field="${iniContact.markRead}"/>
+											                		<span class="checkmark"></span>
+											                	</label>
+											                </td>
+											                <td th:text="${contactus.user.email}"></td>
+											                <td th:text="${contactus.user.firstName + ' ' + contactus.user.lastName}"></td>
+											                <td th:text="${contactus.subject}"></td>
+											                <td th:text="${contactus.message}"></td>
+											                <td th:text="${#temporals.format(contactus.creationDateTime, 'MMM dd, yyyy')}"></td>
+											                <td>
+											                	<a th:href="@{/admin/contactmessages/{id}(id=${contactus.contactId})}">
+											                		<i class="btn btn-danger fa fa-times" title="Delete" onclick="return confirm('Are you sure you want to delete this message?');"></i>
+											                	</a>
+											                	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" th:attr="onclick='openUserModal(\'' + ${contactus.getUser().firstName + '@=@' + contactus.getUser().lastName + '@=@' + contactus.getUser().getUserInfo().address + '@=@' + contactus.getUser().getUserInfo().city + '@=@' + contactus.getUser().getUserInfo().phoneNo + '@=@' + contactus.getUser().getUserInfo().profilePic + '@=@' + contactus.getUser().getUserInfo().province + '@=@' + contactus.getUser().getUserInfo().zipcode + '@=@' + contactus.getUser().userId}+  '\');'" title="View User Details"><i class="fa fa-eye"></i></button>
+											                </td>
+										            	</tr>
+										        	</tbody>
+												</table>
+												</form>
+												
+												<!-- Modal -->
+													<div id="myModal" class="modal fade" role="dialog">
+													  <div class="modal-dialog">
+													
+													    <!-- Modal content-->
+													    <div class="modal-content">
+													      <div class="modal-header">
+													        <button type="button" class="close" data-dismiss="modal">&times;</button>
+													        <h4 class="modal-title" id="userFirstLastName"></h4>
+													      </div>
+													      <div class="modal-body">
+													      	<div class="col-sm-12" style="padding:0px">
+													      		<div class="col-sm-9" style="padding:0px">
+													      			<label>Employee Id: </label> <span id="showUserEmpIdOutput"></span>
+									      								<br/>
+													      			<label>Address: </label> <span id="showUserAddressOutput"></span>
+													      				<br/>
+													      			<label>City: </label> <span id="showUserCityOutput"></span>
+													      				<br/>
+													      			<label>Province: </label> <span id="showUserProvinceOutput"></span>
+													      				<br/>
+													      			<label>Zipcode: </label> <span id="showUserZipcodeOutput"></span>
+													      				<br/>
+													      			<label>Phone #: </label> <span id="showUserPhoneOutput"></span>
+													      		</div>
+													      		<div class="col-sm-3" id="showUserImageOutput"></div>
+													      			<div class="clear"></div>
+													      	</div>
+													      </div>
+													      <div class="modal-footer" style="border:none">
+													        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+													      </div>
+													    </div>
+													
+													  </div>
+													</div>
+
+	                                    	</div>
+                                    	</div>
+                                    	<div th:unless="${!contactUs.isEmpty() and contactUs != null}" class="alert alert-danger" role="alert">
+                                    		<label for="subject">No message received yet</label>
+                                    	</div>
+                                    </div>
+                                        <div class="clear"></div>			
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            
+        </div>
+        <!------------ Footer ------------>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </div>
+    <!------------ Javascript and jQuery files ------------>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/customScript.js" defer></script>
+    
+     <!------------ For table ------------>
+    <script src="/js/jquery.dataTables.min.js" defer></script>
+    <script src="/js/dataTables.bootstrap4.min.js" defer></script>
+    <script>
+	    $(document).ready(function() {
+	        $('#example').DataTable();
+	    });
+    </script>
+    <script>
+    	function openUserModal(val) {
+    		var res = val.split("@=@");
+    		$("#userFirstLastName").text(res[0] + ' ' + res[1]);
+    		
+    		if(res[5] == "" || res[5] == "null" || res[5] == null) {
+    			
+    			res[5] = "dummyUser.jpg";
+    		} else {
+    			res[5] = res[5];
+    		}
+    		$("#showUserAddressOutput").text(res[2]);
+    		$("#showUserCityOutput").text(res[3]);
+    		$("#showUserProvinceOutput").text(res[6]);
+    		$("#showUserZipcodeOutput").text(res[7]);
+    		$("#showUserPhoneOutput").text(res[4]);
+    		$("#showUserImageOutput").html("<img src='../uploaded_images/"+ res[5] +"' class='img-responsive img-rounded'/>");
+    		$("#showUserEmpIdOutput").text('QT-'+res[8]);
+    	}
+    </script>
+    <!------------ For table ------------>
+</body>
+
+</html>

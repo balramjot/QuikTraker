@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+
+<!-------------- head --------------->
+<head th:replace="fragments/head :: head"></head>
+
+<style>
+	.highcharts-root {
+		font-family: unset !important;
+	}
+</style>
+<body>
+
+    <!-------------- header --------------->
+    <header th:replace="fragments/header :: header"></header>
+
+    <!-------------- main container --------------->
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="page-wrapper toggled">
+                
+				<div th:replace="fragments/leftbar :: leftbar"></div>
+				
+                <!-- content div -->
+                <main class="page-content">
+                    <div class="col-md-12">
+                        <div class="container-fluid">
+                            <h2>Home</h2>
+                            <hr style="margin:0px; border-bottom: none;">
+                                <div class="clear ht-40"></div>
+                            <div class="row new-row-div">
+                             	<div class="col-sm-3">
+                             		<a href="/admin/users" style="color:#FFF;">
+	                             		<div class="bg-primary dshb-adm-div1">
+	                             			<div class="col-sm-4">
+	                             				<i class="fa fa-user" style="font-size: 65px;"></i>
+	                             			</div>
+	                             			<div class="col-sm-8">
+	                             				<span class="dshb-adm-div3" th:text="${usersCnt}"></span>
+	                             					<br/>
+	                             				<span class="dshb-adm-div2">Users</span>
+	                             			</div>
+	                             				<div class="clear"></div>
+	                             		</div>
+                             		</a>
+                             	</div>
+								<div class="col-sm-3">
+									<a href="/admin/products" style="color:#FFF;">
+	                             		<div class="bg-warning dshb-adm-div1 dshb-adm-div4">
+	                             			<div class="col-sm-4">
+	                             				<i class="fa fa-cubes" style="font-size: 65px;"></i>
+	                             			</div>
+	                             			<div class="col-sm-8">
+	                             				<span class="dshb-adm-div3" th:text="${productsCnt}"></span>
+	                             					<br/>
+	                             				<span class="dshb-adm-div2">Products</span>
+	                             			</div>
+	                             				<div class="clear"></div>
+	                             		</div>
+	                             	</a>
+                             	</div>
+                             	<div class="col-sm-3">
+                             		<a th:href="${productsOutOfStockCnt gt 0} ? '/admin/outofstockproducts' : 'javascript:void(0)'" style="color:#FFF;">
+	                             		<div class="bg-info dshb-adm-div1 dshb-adm-div5">
+	                             			<div class="col-sm-4">
+	                             				<i class="fa fa-ban" style="font-size: 65px;"></i>
+	                             			</div>
+	                             			<div class="col-sm-8">
+	                             				<span class="dshb-adm-div3" th:text="${productsOutOfStockCnt}"></span>
+	                             					<br/>
+	                             				<span class="dshb-adm-div2">Out of Stock</span>
+	                             			</div>
+	                             				<div class="clear"></div>
+	                             		</div>
+                             		</a>
+                             	</div>
+                             	<div class="col-sm-3">
+                             		<a th:href="${productsCriticalCnt gt 0} ? '/admin/lowstockproducts' : 'javascript:void(0)'" style="color:#FFF;">
+	                             		<div class="bg-danger dshb-adm-div1 dshb-adm-div6">
+	                             			<div class="col-sm-4">
+	                             				<i class="fa fa-exclamation" style="font-size: 65px;"></i>
+	                             			</div>
+	                             			<div class="col-sm-8">
+	                             				<span class="dshb-adm-div3" th:text="${productsCriticalCnt}"></span>
+	                             					<br/>
+	                             				<span class="dshb-adm-div2">Critical Products</span>
+	                             			</div>
+	                             				<div class="clear"></div>
+	                             		</div>
+                             		</a>
+                             	</div>
+                             		<div class="clear ht-40"></div>
+                             		
+                               <div class="row">
+                                    <div class="col-sm-6">
+                                    	<div class="bg-primary dshb-adm-div1 dshb-adm-div7">
+                                    		<h4 style="padding-left: 10px;">Top 7 Products In Demand</h4>
+                                    			<div class="clear"></div>
+                                    		<div th:if="${!mostTransactionByProduct.isEmpty() and mostTransactionByProduct != null}">
+		                                    	<table class="table movie-table">
+								                  <thead>
+									                  <tr style="color:#dcd9e6;">
+									                      <th>Product Id</th>
+									                      <th>Product Name</th>
+									                      <th>In Stock</th>   
+									                      <th>Total Used</th>
+									                  </tr>
+								              	  </thead>   
+								              	  <tbody>
+									                <tr th:each="mostTransaction, vals: ${mostTransactionByProduct}" th:style="${vals.odd} ? 'background:#848484'">
+									                    <td th:text="${'PT-'+mostTransaction.product.productId}"></td>
+									                     <td th:text="${mostTransaction.product.productName}"></td>
+									                     <td th:text="${mostTransaction.product.inStock}"></td>
+									                     <td th:text="${mostTransaction.cnt}"></td>
+									                </tr>
+									                
+								              		</tbody>
+								            	</table>
+							            	</div>
+							            	<div th:unless="${!mostTransactionByProduct.isEmpty() and mostTransactionByProduct != null}" class="alert alert-danger" role="alert">
+                                    			<label for="subject">Nothing to show yet</label>
+                                    		</div>
+						            	</div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                    	<div class="bg-primary dshb-adm-div1 dshb-adm-div7">
+                                    		<h4 style="padding-left: 10px;">Transactions per Month</h4>
+                                    			<div class="clear"></div>
+                                    		<div id="container" style="width: 100%; height: 318px; margin: 0 auto"></div>
+                                    	</div>
+                                    </div>
+                                        <div class="clear ht-40"></div>
+                                     <div class="col-sm-6">
+                                     	<div class="bg-primary dshb-adm-div1 dshb-adm-div7">
+                                    		<h4 style="padding-left: 10px;">Top 7 Categories With Most Products</h4>
+                                    			<div class="clear"></div>
+                                    		<div id="container1" style="width: 100%; height: 318px;"></div>
+                                    	</div>
+                                    </div>  
+                                    <div class="col-sm-6">
+                                    	<div class="bg-primary dshb-adm-div1 dshb-adm-div7">
+                                    		<h4 style="padding-left: 10px;">Top 7 Active Users</h4>
+                                    			<div class="clear"></div>
+                                    		<div th:if="${!mostTransactionByUser.isEmpty() and mostTransactionByUser != null}">
+		                                    	<table class="table movie-table">
+								                  <thead>
+									                  <tr style="color:#dcd9e6;">
+									                      <th>Employee ID</th>
+									                      <th>Name</th>
+									                      <th>Email</th>   
+									                      <th>Total Transactions</th>
+									                  </tr>
+								              	  </thead>   
+								              	  <tbody>
+									                <tr th:each="mostTransactionUser, valss: ${mostTransactionByUser}" th:style="${valss.odd} ? 'background:#848484'">
+									                    <td th:text="${'QT-'+mostTransactionUser.user.userId}"></td>
+									                     <td th:text="${mostTransactionUser.user.firstName + ' ' + mostTransactionUser.user.lastName}"></td>
+									                     <td th:text="${mostTransactionUser.user.email}"></td>
+									                     <td th:text="${mostTransactionUser.cnt}"></td>
+									                </tr>
+									                
+								              		</tbody>
+								            	</table>
+							            	</div>
+							            	<div th:unless="${!mostTransactionByUser.isEmpty() and mostTransactionByUser != null}" class="alert alert-danger" role="alert">
+                                    			<label for="subject">Nothing to show yet</label>
+                                    		</div>
+						            	</div>
+                                    </div>
+                                    	<div class="clear"></div> 
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            
+        </div>
+        <!------------ Footer ------------>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </div>
+    <!------------ Javascript and jQuery files ------------>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/customScript.js" defer></script>
+    <script src="/js/admin_validations.js" defer></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    
+    <script th:inline="javascript">
+    $(function(){
+    	
+    	/***** Bar Chart ******/
+    Highcharts.chart('container', {
+        chart: {
+            type: 'column'
+        },
+        title: false,
+        subtitle: false,
+        xAxis: {
+            categories: /*[[${barChartMap.keySet()}]]*/ 'default',
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            max:100,
+            title: {
+                text: 'No. of Transactions'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">#Transactions</span><table>',
+            pointFormat: '<tr><td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Months',
+            data: /*[[${barChartMap.values()}]]*/ 'values'
+        }]
+    });
+    	
+    	
+
+    	/***** Pie Chart ******/
+    	
+    Highcharts.chart('container1', {
+		chart : {
+			type : 'pie',
+			options3d : {
+				enabled : true,
+				alpha : 50,
+				beta : 0
+			}
+		},
+		title : false,
+		tooltip : {
+			pointFormat : '{series.name}: <b>{point.y:.0f}</b>'
+		},
+		plotOptions : {
+			pie : {
+				allowPointSelect : true,
+				cursor : 'pointer',
+				depth : 35,
+				dataLabels : {
+					enabled : true,
+					format : '{point.name}'
+				}
+			}
+		},
+		series : [ {
+			type : 'pie',
+			name : 'Products',
+			data : [ [ /*[[${pieChartMapLabel1}]]*/ 'label1', /*[[${pieChartMapValue1}]]*/ 'value1' ], [ /*[[${pieChartMapLabel2}]]*/ 'label2', /*[[${pieChartMapValue2}]]*/ 'value2' ], [ /*[[${pieChartMapLabel3}]]*/ 'label3', /*[[${pieChartMapValue3}]]*/ 'value3' ], [ /*[[${pieChartMapLabel4}]]*/ 'label4', /*[[${pieChartMapValue4}]]*/ 'value4' ], [ /*[[${pieChartMapLabel5}]]*/ 'label5', /*[[${pieChartMapValue5}]]*/ 'value5' ], [ /*[[${pieChartMapLabel6}]]*/ 'label6', /*[[${pieChartMapValue6}]]*/ 'value6' ], [ /*[[${pieChartMapLabel7}]]*/ 'label7', /*[[${pieChartMapValue7}]]*/ 'value7' ] ]
+		} ]
+	});
+    });
+</script>
+
+</body>
+
+</html>

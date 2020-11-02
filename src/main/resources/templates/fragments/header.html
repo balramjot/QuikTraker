@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  lang="en">
+<head>
+<meta charset="ISO-8859-1">
+<title>Header</title>
+</head>
+<body>
+	<header th:fragment="header">
+        <nav id="main-nav" class="navbar navbar-default navbar-fixed-top" role="banner">
+            <div class="container full-header-width">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-------------- logo --------------->
+                    <a class="navbar-brand" href="/loginSuccess">
+                        <i class="fa fa-compass" style="font-size:30px;"></i>&nbsp;&nbsp;<strong>QuiK<span
+                                style="font-size:30px; border-bottom: 3px solid">T</span>raker</strong>
+                    </a>
+                </div>
+                
+                 <!-------------- control bar --------------->
+                 <div class="collapse navbar-collapse navbar-right" th:if="${!#authorization.expression('isAuthenticated()')}">
+                 	<ul class="nav navbar-nav">
+                         <li>
+                            <a href="/signIn" style="padding-top:25px;"><i class="fa fa-sign-in"></i>&nbsp;&nbsp;&nbsp;Have a tour</a>
+                        </li>
+                    </ul>
+                 </div>
+                 
+                <div class="collapse navbar-collapse navbar-right" th:if="${#authorization.expression('isAuthenticated()')}">
+                
+                	<!-------------- for normal user --------------->
+                	
+                    <ul class="nav navbar-nav" th:if="${#authorization.expression('hasRole(''USER'')')}">
+                        <li class="dropdown">
+                            <ul class="dropdown-menu cust-user-controls" style="background: #2a2930;">
+                            	<li><a href="/profile">Profile</a></li>
+                                <li><a href="/privacy">Privacy</a></li>
+                                <li><a href="/logout">Sign Out</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false" style="padding-top:25px;"><i class="fa fa-cog"></i>&nbsp;Controls<span
+                                    class="caret"></span></a>
+                            <ul class="dropdown-menu cust-user-controls" style="background: #2a2930;">
+                                <li><a href="/profile"><i class="fa fa-user"></i>&nbsp;Profile</a></li>
+                                <li><a href="/privacy"><i class="fa fa-key"></i>&nbsp;Privacy</a></li>
+                                <li><a href="/logout"><i class="fa fa-sign-out"></i>&nbsp;Sign Out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    	<!-------------- for administrator --------------->
+                    	
+                    <ul class="nav navbar-nav" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false" style="padding-top:25px;"><i
+                                    class="fa fa-bell"></i>
+                                <span class="notification-badg btn-danger btn-sm" th:text="${countLowStockProduct}"></span>
+                            </a>
+                            <ul th:if="${countLowStockProduct gt 0}" class="dropdown-menu cust-user-controls" style="background:#EEE; width: 300px;">
+                                <li  th:each="lowStockProducts, ftr1 : ${lowStockProductList}" th:style="${ftr1.odd} ? 'background:#EEE' : 'background:#D5D5D5'">
+                                	<a href="/admin/lowstockproducts" style="padding: 10px;color: #000;" class="unred-msg-hvr">
+                                		<i class="fa fa-circle text-info" style="font-size:10px;"></i>&nbsp;<span style="font-weight: bold;" th:text="${lowStockProducts.productName}"></span>&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;" th:text="${'#PT-'+lowStockProducts.productId}"></span>
+                                			<br/>
+                                		<span style="font-size: 12px;padding-left: 13px;"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;<span th:text="${lowStockProducts.inStock} "></span></span>
+                                	</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false" style="padding-top:25px;"><i
+                                    class="fa fa-envelope"></i>
+                                <span class="notification-badg btn-info btn-sm" th:text="${unreadContactMessages}"></span>
+                            </a>
+                            <ul th:if="${unreadContactMessages gt 0}" class="dropdown-menu cust-user-controls" style="background:#EEE; width: 300px;">
+                                <li  th:each="unreadMessages, ftr : ${unreadMessagesList}" th:style="${ftr.odd} ? 'background:#EEE' : 'background:#D5D5D5'">
+                                	<a href="/admin/unreadcontactmessages" style="padding: 10px;color: #000;" class="unred-msg-hvr">
+                                		<i class="fa fa-circle text-info" style="font-size:10px;"></i>&nbsp;<span style="font-weight: bold;" th:text="${unreadMessages.user.firstName + ' ' + unreadMessages.user.lastName}"></span>
+                                			<br/>
+                                		<span style="font-size: 12px;padding-left: 13px;" th:text="${unreadMessages.subject + '.....'} "></span>
+                                	</a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false" style="padding-top:25px;"><i class="fa fa-cog"></i>&nbsp;Controls<span
+                                    class="caret"></span></a>
+                            <ul class="dropdown-menu cust-user-controls" style="background: #2a2930;">
+                                <li><a href="/logout"><i class="fa fa-sign-out"></i>&nbsp;Sign Out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+
+<!-------------- head --------------->
+<head th:replace="fragments/head :: head"></head>
+
+<style>
+.toggle_radio{
+  position: relative;
+  background: #5142df;
+  margin: 4px auto;
+  overflow: hidden;
+  padding: 0 !important;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  position: relative;
+  height: 35px;
+  width: 213px;
+}
+.toggle_radio > * {
+  float: left;
+}
+.toggle_radio input[type=radio]{
+  display: none;
+}
+.toggle_radio label{
+  color: rgba(255,255,255,.9);
+  z-index: 0;
+  display: block;
+  width: 100px;
+  height: 28px;
+  margin: 3px 3px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  cursor: pointer;
+  z-index: 1;
+  text-align: center;
+  padding-top: 4px;
+}
+.toggle_option_slider{
+  width: 100px;
+  height: 30px;
+  position: absolute;
+  top: 3px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  -webkit-transition: all .4s ease;
+  -moz-transition: all .4s ease;
+  -o-transition: all .4s ease;
+  -ms-transition: all .4s ease;
+  transition: all .4s ease;
+}
+
+#first_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 3px;
+}
+#second_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 109px;
+}
+#third_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 215px;
+}
+</style>
+<body>
+
+    <!-------------- header --------------->
+    <header th:replace="fragments/header :: header"></header>
+
+    <!-------------- main container --------------->
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="page-wrapper toggled">
+                
+				<div th:replace="fragments/leftbar :: leftbar"></div>
+				
+                <!-- content div -->
+                <main class="page-content">
+                    <div class="col-md-12">
+                        <div class="container-fluid">
+                            <h2>Favorites</h2>
+                            <hr style="margin:0px; border-bottom: none;">
+                                <div class="clear ht-40"></div>
+                            <div class="row new-row-div">
+                            	<div th:if="${message}" th:class="${'alert ' + swapClass}" role="alert">
+								  <strong th:text="${message}"></strong>
+								</div>
+										<!-------------- error message on user creation --------------->
+								<div th:each="erm : ${errorMessage}">
+									<div th:if="${erm}" class="alert alert-danger" role="alert">
+									  <strong th:text="${erm}"></strong>
+									</div>
+								</div>
+
+                            		<div class="clear ht-30"></div>
+                             	<div class="row" id="loadMoreList" th:if="${!allFavourites.isEmpty() and allFavourites != null}">
+                             	
+	                                <div class="col-sm-3 individual-product" th:each="favorites: ${allFavourites}">
+	                                    <div th:id="'appendProduct-' + ${favorites.product.productId}" th:class="${favorites.product.inStock lt 0 or favorites.product.inStock eq 0} ? 'inventory-container out-of-stock-div-rsm' : 'inventory-container'">
+	                                        <div class="product-maindiv">
+	                                            <div class="product-image">                                            
+	                                       			<div class="shape-text">
+														<span th:text="${'PT-'+favorites.product.productId}"></span>					
+													</div>
+	                                                <a href="javascript: void(0);">
+	                                                    <img th:src="${favorites.product.productImage eq '' or favorites.product.productImage eq null} ? '/images/dummyProduct.png' : @{'/uploaded_images/'+${favorites.product.productImage}}" class="inv-img pop"/>
+	                                                </a>
+	                                                <ul class="inv-controls">
+	                                                    <li><a href="javascript:void(0);" class="fa fa-eye"
+	                                                            data-placement="right" data-toggle="tooltip"
+	                                                            th:title="${favorites.product.productDescription}"></a>
+	                                                    </li>
+	                                                    <li th:if="${favorites.product.inStock gt 0}"><i class="fa fa-plus products-transaction-user" data-toggle="modal" data-target="#myModal" th:attr="onclick='openUserModal(\'' + ${favorites.product.productId}+  '\');'" title="Click to use"></i></li>
+	                                                </ul>
+	                                                <span th:class="${favorites.product.inStock lt 0 or favorites.product.inStock eq 0} ? 'product-out-of-stock'" th:text="${favorites.product.inStock lt 0 or favorites.product.inStock eq 0} ? 'out of stock'"></span>
+	                                            </div>
+	
+	                                            <div class="product-info">
+	                                                <h3 class="product-name" th:text="${favorites.product.productName}"></h3>
+	                                                <div class="wid-100">
+	                                                    <div class="col-md-3"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;<span style="font-weight: bold;" th:text="${favorites.product.inStock}" th:id="'appendQuantity-' + ${favorites.product.productId}"></span></div>
+	                                                    <div class="col-md-7"><i class="fa fa-th-large"></i>&nbsp;&nbsp;<span style="font-weight: bold;"  th:text="${favorites.product.productCategory.categoryName}"></span></div>
+	                                                    <div class="col-md-1">
+	                                                    	<i th:id="'favouriteProduct-' + ${favorites.product.productId}" class="fa fa-heart pointer addToFavouriteFav favourite-suer-product-heart" style="color:#371DB3" title="Favorite"></i>
+	                                                    </div>
+	                                                    	<div class="clear"></div>
+	                                                </div>
+	
+	                                            </div>
+	                                        </div>
+	                                    </div>
+	                                </div>
+                      
+                            	</div>
+                            	
+                            	<div th:unless="${!allFavourites.isEmpty() and allFavourites != null}" class="alert alert-danger" role="alert">
+                                  	<label for="subject">Oops !!! No products yet. We are working on it.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            	
+            	<!-- Modal -->
+				<div id="myModal" class="modal fade" role="dialog">
+				  <div class="modal-dialog">
+				
+				    <!-- Modal content-->
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal">&times;</button>
+				        <h4 class="modal-title" style="color: #000;">Start Product Transaction</h4>
+				      </div>
+				      <div class="modal-body">
+			      		<div class="col-sm-12" style="padding:0px; color: #000;">
+			      			<div id="outputAjaxMessage" class="alert" role="alert"></div>
+			      			<form method="POST" id="modal-transaction-form">
+			      				<div class="toggle_radio">
+								    <input type="radio" checked value="withdraw" class="toggle_option" id="first_toggle" name="trns_option">
+								    <input type="radio" class="toggle_option" value="deposit" id="second_toggle" name="trns_option">
+								    <label for="first_toggle"><i class="fa fa-minus"></i>&nbsp;Withdraw</label>
+								    <label for="second_toggle"><i class="fa fa-plus"></i>&nbsp;Deposit</label>
+								    <div class="toggle_option_slider"></div>
+								</div>
+  									<div class="clear ht-10"></div>
+				      			<div class="form-group">
+                                 <label for="lastName">Quantity to be transferred</label>
+                                 <input type="text" class="form-control new-form-inputs" name="transactionQuantity" id="transactionQuantity"
+                                 placeholder="Space to add quantity">
+                                 <input type="hidden" name="hiddenProductId" id="hiddenProductId" value=""/>
+                             </div>
+                             	<div class="clear"></div>
+                             <div class="form-group">
+                                 <label for="lastName">Comments</label>
+                                 <textarea rows="5" class="form-control new-form-textarea" name="comment" id="comment"
+                               placeholder="Comment if any"></textarea>
+                             </div>
+                             	<div class="clear"></div>
+                             <button type="submit" class="btn btn-success">Submit</button>
+                            </form>
+			      		</div>
+				      		<div class="clear"></div>
+				      </div>
+				      <div class="modal-footer" style="border:none">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				      </div>
+				    </div>
+				
+				  </div>
+				</div>
+				
+				
+				<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog" data-dismiss="modal">
+				    <div class="modal-content"  >              
+				      <div class="modal-body">
+				      	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				        <img src="" class="imagepreview" style="width: 100%;" >
+				      </div>    
+				    </div>
+				  </div>
+				</div>
+				
+        </div>
+        <!------------ Footer ------------>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </div>
+    <!------------ Javascript and jQuery files ------------>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/customScript.js" defer></script>
+    <script src="/js/validation.js" defer></script>
+    <script>
+	    function openUserModal(val) {
+	    	$("#hiddenProductId").val(val);
+	    }
+    </script>
+</body>
+
+</html>

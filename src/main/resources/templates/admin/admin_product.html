@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+
+<!-------------- head --------------->
+<head th:replace="fragments/head :: head"></head>
+
+<link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<style>
+	/******* For Table ********/
+	.table-bordered > thead > tr > th, 
+	.table-bordered > tbody > tr > th, 
+	.table-bordered > tfoot > tr > th, 
+	.table-bordered > thead > tr > td, 
+	.table-bordered > tbody > tr > td, 
+	.table-bordered > tfoot > tr > td {
+    	border: 1px solid #8c8b8b;
+	}
+	#example_paginate, #example_filter {
+		text-align: right;
+	}
+	table > thead {
+		background: #bfbfbf;
+	}
+	.table-bordered > thead > tr > th {
+		padding: 10px;
+	}
+	
+	/******* For Radio Buttons ********/
+	.toggle_radio{
+	  position: relative;
+	  background: #5142df;
+	  margin: 4px auto;
+	  overflow: hidden;
+	  padding: 0 !important;
+	  -webkit-border-radius: 50px;
+	  -moz-border-radius: 50px;
+	  border-radius: 50px;
+	  position: relative;
+	  height: 35px;
+	  width: 213px;
+	}
+	.toggle_radio > * {
+	  float: left;
+	}
+	.toggle_radio input[type=radio]{
+	  display: none;
+	}
+	.toggle_radio label{
+	  color: rgba(255,255,255,.9);
+	  z-index: 0;
+	  display: block;
+	  width: 100px;
+	  height: 28px;
+	  margin: 3px 3px;
+	  -webkit-border-radius: 50px;
+	  -moz-border-radius: 50px;
+	  border-radius: 50px;
+	  cursor: pointer;
+	  z-index: 1;
+	  text-align: center;
+	  padding-top: 4px;
+	}
+	.toggle_option_slider{
+	  width: 100px;
+	  height: 30px;
+	  position: absolute;
+	  top: 3px;
+	  -webkit-border-radius: 50px;
+	  -moz-border-radius: 50px;
+	  border-radius: 50px;
+	  -webkit-transition: all .4s ease;
+	  -moz-transition: all .4s ease;
+	  -o-transition: all .4s ease;
+	  -ms-transition: all .4s ease;
+	  transition: all .4s ease;
+	}
+	
+	#first_toggle:checked ~ .toggle_option_slider{
+	  background: rgba(255,255,255,.3);
+	  left: 3px;
+	}
+	#second_toggle:checked ~ .toggle_option_slider{
+	  background: rgba(255,255,255,.3);
+	  left: 109px;
+	}
+	#third_toggle:checked ~ .toggle_option_slider{
+	  background: rgba(255,255,255,.3);
+	  left: 215px;
+	}
+</style>
+<body>
+
+    <!-------------- header --------------->
+    <header th:replace="fragments/header :: header"></header>
+
+    <!-------------- main container --------------->
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="page-wrapper toggled">
+                
+				<div th:replace="fragments/leftbar :: leftbar"></div>
+				
+                <!-- content div -->
+                <main class="page-content">
+                    <div class="col-md-12">
+                        <div class="container-fluid">
+                            <h2>Products</h2>
+                            <hr style="margin:0px; border-bottom: none;">
+                                <div class="clear ht-40"></div>
+                            <div class="row new-row-div">
+                             		<!-------------- success message on user creation --------------->
+                			
+			                	<div th:if="${message}" th:class="${'alert ' + swapClass}" role="alert">
+								  <strong th:text="${message}"></strong>
+								</div>
+										<!-------------- error message on user creation --------------->
+										
+			                	
+								<div th:each="erm : ${errorMessage}">
+									<div th:if="${erm}" class="alert alert-danger" role="alert">
+									  <strong th:text="${erm}"></strong>
+									</div>
+								</div>
+								
+                               <div class="form-bg-color" style="height: auto">
+                                   <div class="col-sm-12" style="padding: 0px;">
+                                   		<div class="col-sm-6">
+	                                   		<form method="POST" id="upload-profile-picture" enctype="multipart-form-data">
+		                             		 	<div class="col-sm-4" style="padding: 0px;">
+		                                            <div class="form-group" style="float: left">
+			                                     		<label for="phoneNo">Product Image</label>
+			                                     		<br/>
+					                                    <div class="new-file-upload-div file btn btn-lg btn-primary">
+															<img th:src="${newProduct.productImage eq '' or newProduct.productImage eq null} ? '/images/dummyProduct.png' : @{'/uploaded_images/'+${newProduct.productImage}}" style="width:120px; height: 120px"/>													
+															<input type="file" name="picture" id="picture" class="new-file-upload-button" style="height: 140px;"/>
+														</div>
+													</div>
+													<div class="form-group" style="float: left; margin-top: 33px; margin-left: 10px;">
+														<button type="button" class="btn btn-warning" id="fileUploadBtn" title="upload" style="display:none;"><i class="fa fa-upload"></i></button>
+													</div>
+														<div class="clear"></div>
+			                                    </div>
+			                                    <div class="col-sm-8">
+			                                    	<div id="output" class="alert" role="alert"></div>
+			                                    </div>
+	                             	   		</form>
+                             	   				<div class="clear ht-10"></div>
+		                                   <form th:if="${formName eq 'save'}" method="POST" id="admin-product-form" th:action="@{/admin/createProduct}">
+		                                      <div class="col-sm-6" style="padding: 0px;">
+		                                            <div class="form-group">
+		                                                <label for="firstName">Product Category</label>
+		                                                <select th:field="${newProduct.productCategory}" class="form-control new-form-inputs" name="productCategory" id="productCategory">
+														    <option th:each="category : ${allCategory}" th:value="${category.categoryId}" th:text="${category.categoryName}"></option>
+														</select>
+		                                            </div>
+			                                    </div>
+			                                    <div class="col-sm-6" style="padding-right: 0px;">
+			                                       <div class="form-group">
+		                                                <label for="lastName">Quantity In Stock</label>
+		                                                <input type="text" class="form-control new-form-inputs" th:field="${newProduct.inStock}" name="inStock" id="inStock"
+		                                                placeholder="Space to add quantity">
+		                                            </div>
+			                                    </div>
+			                                    	<div class="clear"></div>
+			                                    <div class="col-sm-6" style="padding: 0px;">
+		                                            <div class="form-group">
+		                                                <label for="city">Product Name</label>
+		                                                <input type="text" class="form-control new-form-inputs" th:field="${newProduct.productName}" name="productName" id="productName"
+		                                                placeholder="Lorem Ipsum">
+		                                            </div>
+			                                    </div>
+			                                    <div class="col-sm-6" style="padding-right: 0px;">
+			                                       <div class="form-group">
+		                                                <label for="lastName">Quantity To Be Allot</label>
+		                                                <input type="text" class="form-control new-form-inputs" th:field="${newProduct.allotedQuantity}" name="allotedQuantity" id="allotedQuantity"
+		                                                placeholder="Space to add alloted quantity">
+		                                            </div>
+			                                    </div>
+			                                    	<div class="clear"></div>
+			                                    <div class="col-sm-12" style="padding: 0px;">
+			                                       <div class="form-group">
+		                                                <label for="lastName">Product Description</label>
+		                                                <textarea rows="5" class="form-control new-form-textarea" th:field="${newProduct.productDescription}" name="productDescription" id="productDescription"
+		                                                placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting"></textarea>
+		                                            </div>
+			                                    </div>	
+			                                    		
+			                                    <input type="hidden" th:field="${newProduct.productImage}" name="profilePic" id="profilePic">
+			                                    	<div class="clear"></div>
+		                                      <button type="submit" class="btn btn-success">Add</button>
+		                                      <div class="clear ht-30"></div>
+		                                  </form>
+		                                  
+		                                  <form th:if="${formName eq 'update'}" method="POST" th:action="@{/admin/updateProduct/{id}(id=${newProduct.productId})}" id="admin-product-form">
+                                            <div class="col-sm-6" style="padding: 0px;">
+		                                            <div class="form-group">
+		                                                <label for="firstName">Product Category</label>
+		                                                <select th:field="${newProduct.productCategory}" class="form-control new-form-inputs" name="productCategory" id="productCategory">
+														    <option th:each="category : ${allCategory}" th:value="${category.categoryId}" th:text="${category.categoryName}"></option>
+														</select>
+		                                            </div>
+			                                    </div>
+			                                    <div class="col-sm-6" style="padding-right: 0px;">
+			                                       <div class="form-group">
+		                                                <label for="lastName">Quantity In Stock</label>
+		                                                <input type="hidden" th:field="${newProduct.inStock}" name="inStock" id="inStock">
+		                                                	<div class="clear"></div>
+		                                                <span th:text="${newProduct.inStock}" style="font-weight: bold; font-size: 16px; padding-left: 10px;"></span>
+		                                            </div>
+			                                    </div>
+			                                    	<div class="clear"></div>
+			                                     <div class="col-sm-6" style="padding: 0px;">
+		                                            <div class="form-group">
+		                                                <label for="city">Product Name</label>
+		                                                <input type="text" class="form-control new-form-inputs" th:field="${newProduct.productName}" name="productName" id="productName"
+		                                                placeholder="Lorem Ipsum">
+		                                            </div>
+			                                    </div>
+			                                    <div class="col-sm-6" style="padding-right: 0px;">
+			                                       <div class="form-group">
+		                                                <label for="lastName">Quantity To Be Allot</label>
+		                                                <input type="text" class="form-control new-form-inputs" th:field="${newProduct.allotedQuantity}" name="allotedQuantity" id="allotedQuantity"
+		                                                placeholder="Space to add alloted quantity">
+		                                            </div>
+			                                    </div>
+			                                    	<div class="clear"></div>
+			                                    <div class="col-sm-12" style="padding: 0px;">
+			                                       <div class="form-group">
+		                                                <label for="lastName">Product Description</label>
+		                                                <textarea rows="5" class="form-control new-form-textarea" th:field="${newProduct.productDescription}" name="productDescription" id="productDescription"
+		                                                placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting"></textarea>
+		                                            </div>
+			                                    </div>	
+			                                    		
+			                                    <input type="hidden" th:field="${newProduct.productImage}" name="profilePic" id="profilePic">
+			                                    	<div class="clear"></div>
+                                            <button type="submit" class="btn btn-success">Update</button>
+                                            <a href="/admin/products" class="btn btn-default">Cancel</a>
+                                            <div class="clear ht-30"></div>
+                                        </form>
+                                        	
+                                        </div>
+                                       	<div class="col-sm-6">
+                                       		<div class="alert alert-info" role="alert">
+	                                            <h4 class="alert-heading">Upload product image</h4>
+	                                            <ul style="padding-left: 15px;">
+	                                                <li>Click on picture</li>
+	                                                <li>Select the picture you want to upload</li>
+	                                                <li>Click on <strong>Upload</strong> button</li>
+	                                                <li>Save your changes by clicking on <strong>Save</strong> or <strong>Update</strong> button</li>
+	                                            </ul>
+	                                        </div>
+	                                        	<div class="clear ht-30"></div>
+                                       		<div class="alert alert-warning" role="alert">
+	                                            <h4 class="alert-heading">Update In Stock Quantity</h4>
+	                                            <ul style="padding-left: 15px;">
+	                                                <li>Click on <i class="fa fa-pencil"></i> in the table</li>
+	                                                <li>Select <strong>Withdraw : </strong>If you want to <strong>decrease</strong> in stock quantity</li>
+	                                                <li>Select <strong>Deposit : </strong>If you want to <strong>increase</strong> in stock quantity</li>
+	                                                <li>Save your changes by clicking on <strong>Submit</strong> button</li>
+	                                            </ul>
+                                        	</div>
+                                       	</div>
+                                    </div>
+                                    	<div class="clear"></div>
+                                    <div class="col-sm-12" style="padding: 0px;">
+                                    	<div th:if="${!allProduct.isEmpty() and allProduct != null}">
+                                    		<label for="subject">Manage Products</label>
+	                                    	<div class="cust-table-div-desg">
+		                                        <table id="example" class="table table-striped table-bordered" style="width:100%; border: 1px solid #8c8b8b;">
+											        <thead>
+											            <tr>
+											                <th>S No.</th>
+											                <th>Product Image</th>
+											                <th>Category</th>
+											                <th>Product #</th>
+											                <th>Product</th>
+											                <th>Description</th>
+											                <th>Quantity In Stock</th>
+											                <th>Quantity Alloted</th>
+											                <th>Created On</th>
+											                <th>Status</th>
+											                <th>Controls</th>
+											            </tr>
+											       	</thead>
+											        <tbody>
+											            <tr th:each="products, cnt: ${allProduct}" th:style="${products.inStock lt 0 or products.inStock eq 0} ? 'background:#d99393'">
+											                <td th:text="${cnt.count}"></td>
+											                <td>
+											                	<img th:src="${products.productImage eq '' or products.productImage eq null} ? '/images/dummyProduct.png' : @{'/uploaded_images/'+${products.productImage}}" style="width:80px; height: 80px"/>
+											                </td>
+											                <td th:text="${products.productCategory.categoryName}"></td>
+											                <td th:text="${'PT-'+products.productId}"></td>
+											                <td th:text="${products.productName}"></td>
+											                <td th:text="${products.productDescription}"></td>
+											                <td><span th:text="${products.inStock}" th:id="'appendQuantity-' + ${products.productId}"></span>&nbsp;&nbsp;&nbsp;
+											                	<i class="fa fa-pencil text-primary pointer" data-toggle="modal" data-target="#myModal" th:attr="onclick='openUserModal(\'' + ${products.productId}+  '\');'" title="Click to update"></i>
+											                </td>
+											                <td th:text="${products.allotedQuantity}"></td>
+											                <td th:text="${#temporals.format(products.creationDateTime, 'MMM dd, yyyy')}"></td>
+											                <td>
+											                	<a th:href="@{/admin/productStatus/{id}(id=${products.productId})}" th:if="${products.productStatus eq true}" >
+											                		<i class="text-success fa fa-circle" title="Activated"></i>
+											                	</a>
+											                	<a th:href="@{/admin/productStatus/{id}(id=${products.productId})}" th:if="${products.productStatus eq false}">
+											                		<i class="text-danger fa fa-circle" title="Deactivated"></i>
+											                	</a>
+											                </td>
+											                <td>
+											                	<a th:href="@{/admin/productEdit/{id}(id=${products.productId})}">
+											                		<i class="btn btn-primary fa fa-pencil" title="Edit"></i>
+											                	</a>
+											                	<a th:href="@{/admin/productRemove/{id}(id=${products.productId})}">
+											                		<i class="btn btn-danger fa fa-times" title="Delete" onclick="return confirm('Are you sure you want to delete this product?');"></i>
+											                	</a>
+											                </td>
+										            	</tr>
+										        	</tbody>
+												</table>
+	                                    	</div>
+                                    	</div>
+                                    	<div th:unless="${!allProduct.isEmpty() and allProduct != null}" class="alert alert-danger" role="alert">
+                                    		<label for="subject">You haven't added any product yet</label>
+                                    	</div>
+                                    </div>
+                                        <div class="clear"></div>
+                                        
+                                    <!-- Modal -->
+									<div id="myModal" class="modal fade" role="dialog">
+									  <div class="modal-dialog">
+									
+									    <!-- Modal content-->
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <button type="button" class="close" data-dismiss="modal">&times;</button>
+									        <h4 class="modal-title" style="color: #000;">Edit Quantity</h4>
+									      </div>
+									      <div class="modal-body">
+								      		<div class="col-sm-12" style="padding:0px; color: #000;">
+								      			<div id="outputAjaxMessage" class="alert" role="alert"></div>
+								      			<form method="POST" id="modal-quantity-form">
+								      				<div class="toggle_radio">
+													    <input type="radio" checked value="withdraw" class="toggle_option" id="first_toggle" name="trns_option">
+													    <input type="radio" class="toggle_option" value="deposit" id="second_toggle" name="trns_option">
+													    <label for="first_toggle"><i class="fa fa-minus"></i>&nbsp;Withdraw</label>
+													    <label for="second_toggle"><i class="fa fa-plus"></i>&nbsp;Deposit</label>
+													    <div class="toggle_option_slider"></div>
+													</div>
+					  									<div class="clear ht-10"></div>
+									      			<div class="form-group">
+		                                                <label for="lastName">Quantity to be transferred</label>
+		                                                <input type="text" class="form-control new-form-inputs" name="updateInStock" id="updateInStock"
+		                                                placeholder="Space to add quantity">
+		                                                <input type="hidden" name="hiddenProductId" id="hiddenProductId" value=""/>
+		                                            </div>
+		                                            	<div class="clear"></div>
+		                                            <div class="form-group">
+		                                                <label for="lastName">Comments</label>
+		                                                <textarea rows="5" class="form-control new-form-textarea" name="comment" id="comment"
+                                                placeholder="Comment if any"></textarea>
+		                                            </div>
+		                                            	<div class="clear"></div>
+		                                            <button type="submit" class="btn btn-success">Submit</button>
+	                                            </form>
+								      		</div>
+									      		<div class="clear"></div>
+									      </div>
+									      <div class="modal-footer" style="border:none">
+									        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									      </div>
+									    </div>
+									
+									  </div>
+									</div>
+													
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            
+        </div>
+        <!------------ Footer ------------>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </div>
+    <!------------ Javascript and jQuery files ------------>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/customScript.js" defer></script>
+    <script src="/js/admin_validations.js" defer></script>
+    
+     <!------------ For table ------------>
+    <script src="/js/jquery.dataTables.min.js" defer></script>
+    <script src="/js/dataTables.bootstrap4.min.js" defer></script>
+    <script>
+	    $(document).ready(function() {
+	        $('#example').DataTable();
+	    });
+    </script>
+    <!------------ For table ------------>
+    <script>
+    	function openUserModal(val) {
+    		$("#hiddenProductId").val(val);
+    		
+    		/*
+    		* on update function goes to admin_validation.js file's function to update product quantity
+    		*/
+    	}
+    </script>
+</body>
+
+</html>

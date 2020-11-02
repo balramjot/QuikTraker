@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+
+<!-------------- head --------------->
+<head th:replace="fragments/head :: head"></head>
+<body>
+
+    <!-------------- header --------------->
+    <header th:replace="fragments/header :: header"></header>
+
+    <!-------------- main container --------------->
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="page-wrapper toggled">
+                <!-------------- Main Content --------------->
+                <div class="col-md-12">
+                
+                	 <!------------ Banner ------------>
+                	 <section id="banner">
+				        <div id="bannerSlider" class="carousel slide">
+				            <ol class="carousel-indicators">
+				                <li data-target="#bannerSlider" data-slide-to="0" class="" contenteditable="false"></li>
+				                <li data-target="#bannerSlider" data-slide-to="1" class="active" contenteditable="false"></li>
+				                <li data-target="#bannerSlider" data-slide-to="2" class="" contenteditable="false"></li>
+				            </ol>
+				            <div class="carousel-inner">
+				                <div class="item">
+				                    <img src="./images/sliderImg (3).jpg" alt="" class="">
+				                </div>
+				                <div class="item active">
+				                    <img src="./images/sliderImg (2).jpg" alt="" class="">
+				                </div>
+				                <div class="item">
+				                    <img src="./images/sliderImg (5).jpg" alt="" class="">
+				                </div>
+				            </div>
+				        </div>
+				    </section>
+				      <!------------ Banner ------------>
+				      
+					 <!------------ Who we are ------------>
+					    <section class="pageHeadings">
+					        <div class="container">
+					            <div class="section-header">
+					                <h2 class="section-title wow fadeInDown">
+					                    Who We Are
+					                </h2>
+					            </div>
+					
+					            <div class="row">
+					                <div class="col-sm-12 wow fadeInLeft">
+					                    <p style="text-align: justify">
+					                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+					                        the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
+					                        of type and scrambled it to make a type specimen book. It has survived not only five centuries,
+					                        but also the leap into electronic typesetting, remaining essentially unchanged. It was
+					                        popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+					                        and more recently with desktop publishing software like Aldus PageMaker including versions of
+					                        Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+					                        Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer
+					                        took a galley of type and scrambled it to make a type specimen book. Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.
+					                    </p>
+					                </div>
+					
+					            </div>
+					            	
+					        </div>
+					    </section>
+					    <!------------ Who we are ------------>
+					    
+					    <!------------ Services ------------>
+					    <section class="pageHeadings">
+					        <div class="container">
+					            <div class="section-header extra-height">
+					                <h2 class="section-title wow fadeInDown">
+					                    Our Products
+					                </h2>
+					                <p style="color: #FFF;" class="wow fadeInDown">
+					                    It has survived not only five centuries, but also the leap into electronic typesetting, remaining
+					                    essentially unchanged. <br /> Lorem Ipsum is simply dummy text of the printing and typesetting
+					                    industry.
+					                </p>
+					            </div>
+					
+					            <div class="row">
+					                <div class="services">
+					                    <div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-duration="300ms" data-wow-delay="0ms" data-toggle="modal" data-target=".services-modal">
+					                        <div class="service-box jelly">
+					                            <div class="pull-left">
+					                                <i class="fa fa-slack"></i>
+					                            </div>
+					                            <div class="media-body">
+					                                <h4>Anchors</h4>
+					                                <p>
+					                                    It has survived not only five centuries, but also the leap into electronic
+					                                    typesetting, remaining essentially unchanged.
+					                                </p>
+					                            </div>
+					                        </div>
+					                    </div>
+					
+					                    <div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-duration="300ms" data-wow-delay="100ms" data-toggle="modal" data-target=".services-modal">
+					                        <div class="media service-box">
+					                            <div class="pull-left">
+					                                <i class="fa fa-rebel"></i>
+					                            </div>
+					                            <div class="media-body">
+					                                <h4>Fasteners</h4>
+					                                <p>
+					                                    It has survived not only five centuries, but also the leap into electronic
+					                                    typesetting, remaining essentially unchanged.
+					                                </p>
+					                            </div>
+					                        </div>
+					                    </div>
+					
+					                    <div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-duration="300ms" data-wow-delay="200ms" data-toggle="modal" data-target=".services-modal">
+					                        <div class="media service-box">
+					                            <div class="pull-left">
+					                                <i class="fa fa-cubes"></i>
+					                            </div>
+					                            <div class="media-body">
+					                                <h4>Frames</h4>
+					                                <p>
+					                                    It has survived not only five centuries, but also the leap into electronic
+					                                    typesetting, remaining essentially unchanged.
+					                                </p>
+					                            </div>
+					                        </div>
+					                    </div>
+					
+					                    <div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-duration="300ms" data-wow-delay="300ms" data-toggle="modal" data-target=".services-modal">
+					                        <div class="media service-box">
+					                            <div class="pull-left">
+					                                <i class="fa fa-qq"></i>
+					                            </div>
+					                            <div class="media-body">
+					                                <h4>Silicones</h4>
+					                                <p>
+					                                    It has survived not only five centuries, but also the leap into electronic
+					                                    typesetting, remaining essentially unchanged.
+					                                </p>
+					                            </div>
+					                        </div>
+					                    </div>
+					
+					                    <div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-duration="300ms" data-wow-delay="400ms" data-toggle="modal" data-target=".services-modal">
+					                        <div class="media service-box">
+					                            <div class="pull-left">
+					                                <i class="fa fa-drupal"></i>
+					                            </div>
+					                            <div class="media-body">
+					                                <h4>Brackets</h4>
+					                                <p>
+					                                    It has survived not only five centuries, but also the leap into electronic
+					                                    typesetting, remaining essentially unchanged.
+					                                </p>
+					                            </div>
+					                        </div>
+					                    </div>
+					
+					                    <div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-duration="300ms" data-wow-delay="500ms" data-toggle="modal" data-target=".services-modal">
+					                        <div class="media service-box">
+					                            <div class="pull-left">
+					                                <i class="fa fa-yelp"></i>
+					                            </div>
+					                            <div class="media-body">
+					                                <h4>T-Joins</h4>
+					                                <p>
+					                                    It has survived not only five centuries, but also the leap into electronic
+					                                    typesetting, remaining essentially unchanged.
+					                                </p>
+					                            </div>
+					                        </div>
+					                    </div>
+					
+					
+					                </div>
+					            </div>
+					        </div>
+					    </section>
+					    	<div class="clear ht-50"></div>
+					    <!------------ our services ------------>  
+						    
+					    <!------------ Our satisfied customers ------------>
+					    <section class="pageHeadings" id="customers">
+					        <div class="container">
+					            <div class="section-header extra-height">
+					                <h2 class="section-title wow fadeInDown">
+					                    Testimonials
+					                </h2>
+					                <p style="color: #FFF;" class="wow fadeInDown">
+					                    It has survived not only five centuries, but also the leap into electronic typesetting, remaining
+					                    essentially unchanged. <br /> Lorem Ipsum is simply dummy text of the printing and typesetting
+					                    industry.
+					                </p>
+					            </div>
+					
+					            <div class="row">
+					                <div class="col-md-4">
+					                    <div class="customer-first">
+					                        <div class="row">
+					                            <div class="col-xs-12">
+					                                <blockquote>There are many variations of passages of Lorem Ipsum available, but the
+					                                    majority have suffered alteration in some form, by injected humour.</blockquote>
+					                            </div>
+					                        </div>
+					                        <div class="row">
+					                            <div class="col-xs-12">
+					                                <h5>XXXXX XXX</h5>
+					                            </div>
+					                        </div>
+					                    </div>
+					                </div>
+					
+					                <div class="col-md-4">
+					                    <div class="customer-first">
+					                        <div class="row">
+					                            <div class="col-xs-12">
+					                                <blockquote>There are many variations of passages of Lorem Ipsum available, but the
+					                                    majority have suffered alteration in some form, by injected humour.</blockquote>
+					                            </div>
+					                        </div>
+					                        <div class="row">
+					                            <div class="col-xs-12">
+					                                <h5>XXXXX XXX</h5>
+					                            </div>
+					                        </div>
+					                    </div>
+					                </div>
+					
+					                <div class="col-md-4">
+					                    <div class="customer-first">
+					                        <div class="row">
+					                            <div class="col-xs-12">
+					                                <blockquote>There are many variations of passages of Lorem Ipsum available, but the
+					                                    majority have suffered alteration in some form, by injected humour.</blockquote>
+					                            </div>
+					                        </div>
+					                        <div class="row">
+					                            <div class="col-xs-12">
+					                                <h5>XXXXX XXX</h5>
+					                            </div>
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					        </div>
+					    </section>
+					    <!------------ Our satisfied customers ------------>
+					    
+					     <!------------ Meet our trainers ------------>
+						    <section class="pageHeadings">
+						        <div class="container">
+						            <div class="section-header extra-height">
+						                <h2 class="section-title wow fadeInDown">
+						                    Our Clients
+						                </h2>
+						                <p style="color: #FFF;" class="wow fadeInDown">
+						                    It has survived not only five centuries, but also the leap into electronic typesetting, remaining
+						                    essentially unchanged. <br /> Lorem Ipsum is simply dummy text of the printing and typesetting
+						                    industry.
+						                </p>
+						            </div>
+										<div class="clear ht-20"></div>
+						            <div class="row" data-anim-type="fade-in-up">
+						                <div class="services">
+						                    <div class="col-xs-12 col-sm-3 col-lg-12">
+						                        <div class="col-md-3 trainer-mar-botm">
+						                            <img src="/images/ourClients (3).jpg" class="img-responsive trainer-image">
+						                            <h3 class="trainer-font">XXX</h3>
+						                            <h5 class="trainer-font"><strong>Client 1</strong></h5>
+						                        </div>
+						                        <div class="col-md-3 trainer-mar-botm">
+						                            <img src="/images/ourClients (1).jpg"
+						                                class="img-responsive trainer-image">
+						                            <h3 class="trainer-font">XXXXXX</h3>
+						                            <h5 class="trainer-font"><strong>Client 2</strong></h5>
+						                        </div>
+						                        <div class="col-md-3 trainer-mar-botm">
+						                            <img src="/images/ourClients (2).jpg"
+						                                class="img-responsive trainer-image">
+						                            <h3 class="trainer-font">XXXXXXXX</h3>
+						                            <h5 class="trainer-font"><strong>Client 3</strong></h5>
+						                        </div>
+						                        <div class="col-md-3 trainer-mar-botm">
+						                            <img src="/images/ourClients (4).jpg"
+						                                class="img-responsive trainer-image">
+						                            <h3 class="trainer-font">XXXX</h3>
+						                            <h5 class="trainer-font"><strong>Client 4</strong></h5>
+						                        </div>
+						                    </div>
+						                </div>
+						            </div>
+						        </div>
+						    </section>
+						    <!------------ Meet our trainers ------------>
+						    
+                </div>
+               
+                <div class="clear"></div>
+            </div>
+        </div>
+
+
+        <!------------ Footer ------------>
+        <footer th:replace="fragments/footer :: footer"></footer>
+    </div>
+    <!------------ Javascript and jQuery files ------------>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/customScript.js" defer></script>
+    
+</body>
+
+</html>
